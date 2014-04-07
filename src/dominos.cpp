@@ -126,14 +126,14 @@ namespace cs296
 		box1->SetAngularVelocity(-pi/3);
 		
 
-		b2Body*[6] gear;
+		b2Body* gear[6];
 		float clock_center_x=50.0f,clock_center_y=-5.0f;
-		float 	gear_centre_x[]=[20.0,18.0,18.0,0.0,0.0,-22.0],
-				gear_centre_y[]=[-5.0,17.0,17.0,0.0,0.0,7.0];
+		float 	gear_center_x[]={20.0,18.0,18.0,0.0,0.0,-22.0};
+				gear_center_y[]={-5.0,17.0,17.0,0.0,0.0,7.0};
 		float p=1.0,d=2.0;
-		float gear_angle[]=[0.0,0.0,0.0,0.0,0.0,0.0];
-		int gear_teeth[]=[9,72,24,72,18,72];
-		int gear_index[]=[1,1,2,2,1,1];
+		float gear_angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
+		int gear_teeth[]={9,72,24,72,18,72};
+		int gear_index[]={1,1,2,2,1,1};
 		//[ 9 tooth motor gear,
 		//  72 tooth minute, 
 		//  24 tooth secondory, 
@@ -147,7 +147,7 @@ namespace cs296
 			float r1=r0+d/2,r2=r0+d;
 			float tempAngle=gear_angle[i];
 
-			bd1->position.Set(gear_centre_x[i],gear_centre_y[i]);
+			bd1->position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			gear[i] = m_world->CreateBody(bd1);
 
 			b2Vec2[t] polyShape;
