@@ -127,21 +127,51 @@ namespace cs296
 		
 
 		b2Body* gear[6];
-		float clock_center_x=50.0f,clock_center_y=-5.0f;
-		float 	gear_center_x[]={20.0,18.0,18.0,0.0,0.0,-22.0},
+		float clock_center_x=0.0f,clock_center_y=20.0f;
+		float 	gear_center_x[]={20.0,18.0,18.0,0.0,0.0,-17.0},
 				gear_center_y[]={-5.0,17.0,17.0,0.0,0.0,7.0};
-		float p=1.0,d=2.0;
-		float gear_angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
+		float p=0.5,d=1.0;
+		float gear_angle[]={0.0,0.0,0.0,0.0,0.0,5.0};
 		int gear_teeth[]={9,72,24,72,18,72};
-		int gear_index[]={1,1,2,2,1,1};
 		//[ 9 tooth motor gear,
 		//  72 tooth minute, 
 		//  24 tooth secondory, 
 		//  72 tooth intermediate, 
 		//  18 tooth secondary, 
 		//  72 tooth hour]
+		 enum _entityCategory {
+			g0	=	0x0001,
+			g1	=	0x0002,
+			g2	=	0x0004,
+			g3	=	0x0008,
+			g4	=	0x0010,
+			g5	=	0x0020,
+		  };
 		for(int i=0;i<6;i++){
-
+			if(i==0){
+				f.filter.categoryBits	=	g0;
+				f.filter.maskBits		=	g1;
+				}
+			if(i==1){
+				f.filter.categoryBits	=	g1;
+				f.filter.maskBits		=	g0;
+				}
+			if(i==2){
+				f.filter.categoryBits	=	g2;
+				f.filter.maskBits		=	g3;
+				}
+			if(i==3){
+				f.filter.categoryBits	=	g3;
+				f.filter.maskBits		=	g2;
+				}
+			if(i==4){
+				f.filter.categoryBits	=	g4;
+				f.filter.maskBits		=	g5;
+				}
+			if(i==5){
+				f.filter.categoryBits	=	g5;
+				f.filter.maskBits		=	g4;
+				}
 			int t=2*gear_teeth[i];
 			float r0=p/(2*sin(pi/t));
 			float r1=r0+d/2,r2=r0+d;
@@ -149,12 +179,10 @@ namespace cs296
 
 			bd1->position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			gear[i] = m_world->CreateBody(bd1);
-
-			b2Vec2 polyShape[t];
-			for(int j=0;j<t;j++)
-				polyShape[j]=b2Vec2(r0*cos(temp_angle+(j*pi)/t),r0*sin(temp_angle+(j*pi)/t));
-			ss.Set(polyShape,t);
-			f.shape=(&ss);
+			b2CircleShape cirle;
+			circle.m_p.Set(0.0,0.0);
+			circle.m_radius=r0;
+			f.shape=(&circle);
 			gear[i]->CreateFixture(&f);
 
 			b2Vec2 toothShape[6];
@@ -170,9 +198,13 @@ namespace cs296
 				f.shape=(&ss);
 				f.filter.groupIndex=gear_index[i];
 				gear[i]->CreateFixture(&f);
-				temp_angle+=2*pi/t;
-
+				temp_angle+=4*pi/t;
 			}
+			
+			anchor.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
+			jd.Initialize(b1,gear[i],anchor);
+			m_world->CreateJoint(&jd);
+			gear[i]->SetAngularVelocity(-pi/3);
 		}
 	}
 
