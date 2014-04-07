@@ -124,7 +124,58 @@ namespace cs296
 		jd.Initialize(b1, box1, anchor);
 		m_world->CreateJoint(&jd);
 		box1->SetAngularVelocity(-pi/3);
-	
+		
+
+		b2Body*[6] gear;
+		float clock_center_x=50.0f,clock_center_y=-5.0f;
+		float 	gear_centre_x[]=[20.0,18.0,18.0,0.0,0.0,-22.0],
+				gear_centre_y[]=[-5.0,17.0,17.0,0.0,0.0,7.0];
+		float p=1.0,d=2.0;
+		float gear_angle[]=[0.0,0.0,0.0,0.0,0.0,0.0];
+		int gear_teeth[]=[9,72,24,72,18,72];
+		int gear_index[]=[1,1,2,2,1,1];
+		//[ 9 tooth motor gear,
+		//  72 tooth minute, 
+		//  24 tooth secondory, 
+		//  72 tooth intermediate, 
+		//  18 tooth secondary, 
+		//  72 tooth hour]
+		for(int i=0;i<6;i++){
+
+			int t=2*gear_teeth[i];
+			float r0=p/(2*sin(pi/t));
+			float r1=r0+d/2,r2=r0+d;
+			float tempAngle=gear_angle[i];
+
+			bd1->position.Set(gear_centre_x[i],gear_centre_y[i]);
+			gear[i] = m_world->CreateBody(bd1);
+
+			b2Vec2[t] polyShape;
+			for(int j=0;j<t;j++)
+				polyShape[j]=b2Vec2(r0*cos(temp_angle+(j*pi)/t),r0*sin(temp_angle+(j*pi)/t));
+			shape.Set(polyShape,t);
+			f.shape=(&shape);
+			gear[i]->CreateFixture(&f);
+
+			b2Vec2[6] toothShape;
+			float theta=pi/gear_teeth[i];
+			for(int j=0;j<gear_teeth[i];j++){
+				toothShape[0]=b2Vec2(r0*cos(temp_angle),r0*sin(temp_angle));
+				toothShape[1]=b2Vec2(r1*cos(temp_angle),r1*sin(temp_angle));
+				toothShape[2]=b2Vec2(r2*cos(temp_angle+theta/3),r2*sin(temp_angle+theta/3));
+				toothShape[3]=b2Vec2(r2*cos(temp_angle+2*theta/3),r2*sin(temp_angle+2*theta/3));
+				toothShape[4]=b2Vec2(r1*cos(temp_angle+theta),r1*sin(temp_angle+theta));
+				toothShape[5]=b2Vec2(r0*cos(temp_angle+theta),r0*sin(temp_angle+theta));
+				shape.Set(toothShape,6);
+				f.shape=(&shape);
+				f.filter.groupIndex=gear_index[i];
+				gear[i]->CreateFixture(&f);
+				tempAngle+=2*pi/t;
+
+			}
+		}
+	}
+
 	}
 
   sim_t *sim = new sim_t("Dominos", dominos_t::create);
