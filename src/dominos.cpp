@@ -196,7 +196,6 @@ namespace cs296
 				toothShape[5]=b2Vec2(r0*cos(temp_angle+theta),r0*sin(temp_angle+theta));
 				ss.Set(toothShape,6);
 				f.shape=(&ss);
-				f.filter.groupIndex=gear_index[i];
 				gear[i]->CreateFixture(&f);
 				temp_angle+=4*pi/t;
 			}
