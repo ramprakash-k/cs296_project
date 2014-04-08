@@ -64,11 +64,13 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
+	    float xb1=30.0,yb1=22.5;
+	    
 	    b2Body* b1;
 		b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
 		shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
 		b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (default)
-		bd.position.Set(0,22.5);
+		bd.position.Set(xb1,yb1);
 		//~ bd.type=b2_dynamicBody;
 		b1 = m_world->CreateBody(&bd);
 		b1->CreateFixture(&shape1, 0.0f);
@@ -77,7 +79,7 @@ namespace cs296
 		b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (dynamic, position -10,15, fixed rotation)
 		bd1->type = b2_dynamicBody;
 		bd1->fixedRotation=false;
-		bd1->position.Set(0,22.5);
+		bd1->position.Set(xb1,yb1);
 		b2FixtureDef f;
 		f.density=1;
 		f.friction = 0;
@@ -97,6 +99,7 @@ namespace cs296
 		ballbd.type = b2_dynamicBody;
 		b2Vec2 a[4];
 		b2PolygonShape ss;
+		
 		for(int i=0;i<20;i++)
 		{
 			int j=i+1;
@@ -113,26 +116,27 @@ namespace cs296
 			shape.Set(b2Vec2(16.f*sin(i*pi/10),16.f*cos(i*pi/10)),b2Vec2(20.f*sin(j*pi/10),20.f*cos(j*pi/10)));
 			f.shape=(&shape);
 			box1->CreateFixture(&f);
-			ballbd.position.Set(18.f*sin(i*pi/10),22.5 + 18.f*cos(i*pi/10));
+			ballbd.position.Set(xb1 + 18.f*sin(i*pi/10),yb1 + 18.f*cos(i*pi/10));
 			spherebody = m_world->CreateBody(&ballbd);
 			spherebody->CreateFixture(&ballfd);
 		}
 		
 		b2RevoluteJointDef jd;
 		b2Vec2 anchor;	//! Variable: anchor (b2Vec2): position -37,40
-		anchor.Set(0.f, 22.5f);
+		anchor.Set(xb1,yb1);
 		jd.Initialize(b1, box1, anchor);
 		m_world->CreateJoint(&jd);
 		box1->SetAngularVelocity(-pi/3);
 		
 
 		b2Body* gear[6];
-		float clock_center_x=0.0f,clock_center_y=20.0f;
-		float 	gear_center_x[]={20.0,18.0,18.0,0.0,0.0,-17.0},
-				gear_center_y[]={-5.0,17.0,17.0,0.0,0.0,7.0};
-		float p=0.5,d=1.0;
+		float clock_center_x=-30.0f,clock_center_y=20.0f;
+		float 	gear_center_x[]={28,15.2,15.2,0.0,0.0,-14.1},
+				gear_center_y[]={-4.5,7.0,7.0,0.0,0.0,7.0};
+		float p=0.5,d=0.9;
 		float gear_angle[]={0.0,0.0,0.0,0.0,0.0,5.0};
-		int gear_teeth[]={9,72,24,72,18,72};
+		int gear_teeth[]={10,72,24,72,18,72};
+		b2RevoluteJoint* rev_joint_gear[6];
 		//[ 9 tooth motor gear,
 		//  72 tooth minute, 
 		//  24 tooth secondory, 
@@ -173,7 +177,7 @@ namespace cs296
 				f.filter.maskBits		=	g4;
 				}
 			int t=2*gear_teeth[i];
-			float r0=p/(2*sin(pi/t));
+			float r0=p*t/(2*pi);
 			float r1=r0+d/2,r2=r0+d;
 			float temp_angle=gear_angle[i];
 
@@ -202,10 +206,28 @@ namespace cs296
 			
 			anchor.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			jd.Initialize(b1,gear[i],anchor);
-			m_world->CreateJoint(&jd);
-			gear[i]->SetAngularVelocity(-pi/3);
+			rev_joint_gear[i] = (b2RevoluteJoint*)m_world->CreateJoint(&jd);
 		}
+		gear[5]->SetAngularVelocity(2*pi);
+		
+		b2GearJointDef grj;
+		grj.bodyA = gear[3];
+		grj.bodyB = gear[4];
+		grj.joint1 = rev_joint_gear[3];
+		grj.joint2 = rev_joint_gear[4];
+		grj.ratio = -1;
+		m_world->CreateJoint(&grj);
+		
+		grj.bodyA = gear[1];
+		grj.bodyB = gear[2];
+		grj.joint1 = rev_joint_gear[1];
+		grj.joint2 = rev_joint_gear[2];
+		grj.ratio = -1;
+		m_world->CreateJoint(&grj);
 	}
+
+
+
 
 
   sim_t *sim = new sim_t("Dominos", dominos_t::create);
