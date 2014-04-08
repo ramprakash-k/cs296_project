@@ -100,7 +100,7 @@ doc:
 	@$(ECHO) "Done"
 clean:
 	@$(ECHO) -n "Cleaning up...."
-	@$(RM) -rf myobjs mybins mylibs
+	@$(RM) -rf obj bin
 	@$(RM) -rf $(DOCDIR)/html
 	@$(RM) -rf $(DOCDIR)/$(LATEX).aux $(DOCDIR)/$(LATEX).bbl $(DOCDIR)/$(LATEX).log $(DOCDIR)/$(LATEX).dvi $(DOCDIR)/$(LATEX).pdf $(DOCDIR)/$(LATEX).blg
 	@$(ECHO) "Done"

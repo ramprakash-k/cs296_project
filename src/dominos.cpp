@@ -64,7 +64,7 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
-	    float xb1=30.0,yb1=22.5;
+	    float xb1=0.0,yb1=22.5;
 	    
 	    b2Body* b1;
 		b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
@@ -77,24 +77,24 @@ namespace cs296
 	    
 		b2Body* box1;
 		b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (dynamic, position -10,15, fixed rotation)
-		bd1->type = b2_dynamicBody;
+		//~ bd1->type = b2_dynamicBody;
 		bd1->fixedRotation=false;
 		bd1->position.Set(xb1,yb1);
 		b2FixtureDef f;
 		f.density=1;
 		f.friction = 0;
-		f.restitution = 1;
+		f.restitution = 0;
 		box1 = m_world->CreateBody(bd1);
 		b2EdgeShape shape;
 		
 		b2Body* spherebody;
-		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (0.5 radius circles)
-		circle.m_radius = 0.7;	
-		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 1, friction 0, restitution 0)
+		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (1 radius circles)
+		circle.m_radius = 1;	
+		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 100, friction 0, restitution 0)
 		ballfd.shape = &circle;
-		ballfd.density = 20.0f;
+		ballfd.density = 100.0f;
 		ballfd.friction = 0.0f;
-		ballfd.restitution = 1.0f;
+		ballfd.restitution = 0.0f;
 		b2BodyDef ballbd;
 		ballbd.type = b2_dynamicBody;
 		b2Vec2 a[4];
@@ -108,18 +108,95 @@ namespace cs296
 			a[2].Set(19.9f*sin(j*pi/10),19.9f*cos(j*pi/10));
 			a[3].Set(19.9f*sin(i*pi/10),19.9f*cos(i*pi/10));
 			ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
-			a[0].Set(16.f*sin(i*pi/10),16.f*cos(i*pi/10));
-			a[1].Set(16.f*sin(j*pi/10),16.f*cos(j*pi/10));
-			a[2].Set(15.9f*sin(j*pi/10),15.9f*cos(j*pi/10));
-			a[3].Set(15.9f*sin(i*pi/10),15.9f*cos(i*pi/10));
+			a[0].Set(12.f*sin(i*pi/10),12.f*cos(i*pi/10));
+			a[1].Set(12.f*sin(j*pi/10),12.f*cos(j*pi/10));
+			a[2].Set(11.9f*sin(j*pi/10),11.9f*cos(j*pi/10));
+			a[3].Set(11.9f*sin(i*pi/10),11.9f*cos(i*pi/10));
 			ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
-			shape.Set(b2Vec2(16.f*sin(i*pi/10),16.f*cos(i*pi/10)),b2Vec2(20.f*sin(j*pi/10),20.f*cos(j*pi/10)));
+			shape.Set(b2Vec2(12.f*sin(i*pi/10),12.f*cos(i*pi/10)),b2Vec2(20.f*sin(j*pi/10),20.f*cos(j*pi/10)));
 			f.shape=(&shape);
 			box1->CreateFixture(&f);
-			ballbd.position.Set(xb1 + 18.f*sin(i*pi/10),yb1 + 18.f*cos(i*pi/10));
-			spherebody = m_world->CreateBody(&ballbd);
-			spherebody->CreateFixture(&ballfd);
 		}
+		
+		ballbd.position.Set(xb1+-2,yb1 + 12.7);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+3.3,yb1 + 12.4);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+6.8,yb1 + 10.8);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+10,yb1 + 8);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+18.4,yb1 + 1.8);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+18.3,yb1 - 4.2);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+16.2,yb1 - 9.5);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+12.5,yb1 - 14);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+7.3,yb1 - 17.2);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+1.7,yb1 - 18.6);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-0.6,yb1 - 18.7);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-6.3,yb1 - 17.6);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-11.6,yb1 - 14.9);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-15.7,yb1 - 10.6);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-11.6,yb1 - 5.9);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-12.7,yb1 - 2);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-12.7,yb1 + 2.1);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-11.4,yb1 + 5.8);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-9.1,yb1 + 9.2);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
+		
+		ballbd.position.Set(xb1+-5.7,yb1 + 11.3);
+		spherebody = m_world->CreateBody(&ballbd);
+		spherebody->CreateFixture(&ballfd);
 		
 		b2RevoluteJointDef jd;
 		b2Vec2 anchor;	//! Variable: anchor (b2Vec2): position -37,40
