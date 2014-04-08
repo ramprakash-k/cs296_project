@@ -17,9 +17,8 @@ DOXYGEN = doxygen
 PROJECT_ROOT := $(CURDIR)
 EXTERNAL_ROOT=$(PROJECT_ROOT)/external
 SRCDIR = $(PROJECT_ROOT)/src
-OBJDIR = $(PROJECT_ROOT)/myobjs
-BINDIR = $(PROJECT_ROOT)/mybins
-LIBDIR = $(PROJECT_ROOT)/mylibs
+OBJDIR = $(PROJECT_ROOT)/obj
+BINDIR = $(PROJECT_ROOT)/bin
 DOCDIR = $(PROJECT_ROOT)/doc
 LATEX  = cs296_report_01
 # Target
@@ -59,18 +58,12 @@ SRCS := $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 OLS  := $(filter-out $(OBJDIR)/main.o,$(OBJS))
 
-######################################
-# Change this variable : (TRUE - shared library, FALSE - static library)
-SHARED_LIB	= FALSE
-######################################
-
 .PHONY: setup exe clean distclean static dynamic exelib doc report
 
 setup:
 	@$(ECHO) "Setting up compilation..."
-	@mkdir -p myobjs
-	@mkdir -p mybins
-	@mkdir -p mylibs 
+	@mkdir -p obj
+	@mkdir -p bin
 	@if ! test -e $(BOX2D_ROOT)/lib/libBox2D.a && ! test -e $(BOX2D_ROOT)/include/Box2D; \
 	then $(ECHO) "Box2D not Found....." && $(ECHO) "Installing Box2D...." && cd $(BOX2D_ROOT)/src \
 	&& tar -xzf Box2D.tgz && cd Box2D && mkdir build296 && cd build296 && cmake ../ && make -s install && make -s && $(ECHO) "Box2D installed."; \
@@ -99,27 +92,7 @@ $(OBJS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	fi;
 	@$(RM) -f temp.log temp.err
 
-static: $(OBJS)
-	@$(PRINTF) "$(MESG_COLOR)Building library: $(NO_COLOR) $(FILE_COLOR) %18s$(NO_COLOR)" "$(SLIBT)"
-	@ar -cq $(LIBDIR)/$(SLIBT) $(OLS)
-	@$(PRINTF) $(OK_FMT) $(OK_STRING)
 
-dynamic: $(OBJS)
-	@$(PRINTF) "$(MESG_COLOR)Building library: $(NO_COLOR) $(FILE_COLOR) %18s$(NO_COLOR)" "$(DLIBT)"
-	@$(CC) -shared -Wl,-soname,$(LIBDIR)/$(DLIBT) -o $(LIBDIR)/$(DLIBT) $(OLS)
-	@$(PRINTF) $(OK_FMT) $(OK_STRING)
-
-exelib: setup
-	@if test $(SHARED_LIB) = TRUE; \
-	then make -s dynamic && \
-		$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(LIB_TARGET)" && \
-		$(CC) -o $(BINDIR)/$(LIB_TARGET) $(LDFLAGS) $(OBJDIR)/main.o $(LIBDIR)/$(DLIBT) $(LIBS) && \
-		$(PRINTF) $(OK_FMT) $(OK_STRING); \
-	else make -s static && \
-		$(PRINTF) "$(MESG_COLOR)Building executable:$(NO_COLOR) $(FILE_COLOR) %16s$(NO_COLOR)" "$(LIB_TARGET)" && \
-		$(CC) -o $(BINDIR)/$(LIB_TARGET) $(LDFLAGS) $(OBJDIR)/main.o $(LIBDIR)/$(SLIBT) $(LIBS) && \
-		$(PRINTF) $(OK_FMT) $(OK_STRING); \
-	fi;
 doc:
 	@$(ECHO) -n "Generating Doxygen Documentation ...  "
 	@$(RM) -rf doc/html
