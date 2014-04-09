@@ -44,7 +44,6 @@ namespace cs296
 {
   //!  This constructor defines all the bodies present in the simulation.
 	
-	b2Body* gear[6];
 	b2RevoluteJoint* box1_rev;
 	b2Body* box1;
 	dominos_t::dominos_t()
@@ -67,7 +66,7 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
-	    float xb1=25.0,yb1=22.5;
+	    float xb1=24.1,yb1=22.5;
 	    
 	    m_world->SetGravity(b2Vec2(0,-100));
 	    
@@ -87,6 +86,8 @@ namespace cs296
 		f.density=1;
 		f.friction = 0;
 		f.restitution = 0.0;
+		f.filter.categoryBits = 0x0400;
+		f.filter.maskBits = 0x400;
 		box1 = m_world->CreateBody(bd1);
 		b2EdgeShape shape;
 		
@@ -98,6 +99,8 @@ namespace cs296
 		ballfd.density = 50.0f;
 		ballfd.friction = 0.0f;
 		ballfd.restitution = 0.0f;
+		ballfd.filter.categoryBits = 0x0400;
+		ballfd.filter.maskBits = 0x400;
 		b2BodyDef ballbd;
 		ballbd.type = b2_dynamicBody;
 		b2Vec2 a[4];
@@ -148,22 +151,23 @@ namespace cs296
 		box1_rev=(b2RevoluteJoint*)m_world->CreateJoint(&jd);
 		
 		float clock_center_x=-30.0f,clock_center_y=20.0f;
-		float 	gear_center_x[]={28,14.6,14.6,0.0,0.0,-13.6},
-				gear_center_y[]={-4.5,7.0,7.0,0.0,0.0,7.0};
+		float 	gear_center_x[10]={54.1,14.6,14.6,0.0,0.0,-13.6,42.55,42.55,27.2,27.2},	//43.45
+				gear_center_y[10]={2.5,7.0,7.0,0.0,0.0,7.0,7.0,7.0,0,0};
 		float p=0.5,d=0.85;
-		float gear_angle[]={0.0,0.0,0.49,0.0,0.0,0.19};
-		int gear_teeth[]={10,72,24,72,18,72};
-		b2RevoluteJoint* rev_joint_gear[6];
-		//[ 10 tooth motor gear,
-		//  60 tooth second, 
-		//  9 tooth secondary, 
-		//  90 tooth intermediate, 
-		//  12 tooth secondary, 
-		//  72 tooth minute, 
-		//  24 tooth secondary, 
-		//  72 tooth intermediate, 
-		//  18 tooth secondary, 
-		//  72 tooth hour]
+		float gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1};
+		int gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};
+		b2RevoluteJoint* rev_joint_gear[10];
+		b2Body* gear[10];
+		//~ 10 tooth motor gear,	0
+		//~ 60 tooth second, 		6
+		//~ 9 tooth secondary, 		7
+		//~ 90 tooth intermediate, 	8
+		//~ 12 tooth secondary, 	9
+		//~ 72 tooth minute,		1
+		//~ 24 tooth secondary, 	2
+		//~ 72 tooth intermediate, 	3
+		//~ 18 tooth secondary, 	4
+		//~ 72 tooth hour,			5
 		f.density=0.01;
 		
 		enum _entityCategory {
@@ -173,15 +177,19 @@ namespace cs296
 			g3	=	0x0008,
 			g4	=	0x0010,
 			g5	=	0x0020,
+			g6	=	0x0040,
+			g7	=	0x0080,
+			g8	=	0x0100,
+			g9	=	0x0200
 		  };
-		for(int i=1;i<6;i++){
+		for(int i=0;i<10;i++){
 			if(i==0){
 				f.filter.categoryBits	=	g0;
-				f.filter.maskBits		=	g1;
+				f.filter.maskBits		=	g6;
 				}
 			if(i==1){
 				f.filter.categoryBits	=	g1;
-				f.filter.maskBits		=	g0;
+				f.filter.maskBits		=	g9;
 				}
 			if(i==2){
 				f.filter.categoryBits	=	g2;
@@ -198,6 +206,22 @@ namespace cs296
 			if(i==5){
 				f.filter.categoryBits	=	g5;
 				f.filter.maskBits		=	g4;
+				}
+			if(i==6){
+				f.filter.categoryBits	=	g6;
+				f.filter.maskBits		=	g0;
+				}
+			if(i==7){
+				f.filter.categoryBits	=	g7;
+				f.filter.maskBits		=	g8;
+				}
+			if(i==8){
+				f.filter.categoryBits	=	g8;
+				f.filter.maskBits		=	g7;
+				}
+			if(i==9){
+				f.filter.categoryBits	=	g9;
+				f.filter.maskBits		=	g1;
 				}
 			int t=2*gear_teeth[i];
 			float r0=p*t/(2*pi);
@@ -247,6 +271,27 @@ namespace cs296
 		grj.bodyB = gear[2];
 		grj.joint1 = rev_joint_gear[1];
 		grj.joint2 = rev_joint_gear[2];
+		grj.ratio = -1;
+		m_world->CreateJoint(&grj);
+		
+		grj.bodyA = gear[6];
+		grj.bodyB = gear[7];
+		grj.joint1 = rev_joint_gear[6];
+		grj.joint2 = rev_joint_gear[7];
+		grj.ratio = -1;
+		m_world->CreateJoint(&grj);
+		
+		grj.bodyA = gear[9];
+		grj.bodyB = gear[8];
+		grj.joint1 = rev_joint_gear[9];
+		grj.joint2 = rev_joint_gear[8];
+		grj.ratio = -1;
+		m_world->CreateJoint(&grj);
+		
+		grj.bodyA = gear[0];
+		grj.bodyB = box1;
+		grj.joint1 = rev_joint_gear[0];
+		grj.joint2 = box1_rev;
 		grj.ratio = -1;
 		m_world->CreateJoint(&grj);
 		
