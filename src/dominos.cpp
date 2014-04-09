@@ -253,8 +253,12 @@ namespace cs296
 			}
 			
 			anchor.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
-			b2Body *b2=new b2Body(*b1);
-			b2->SetTransform(b2Vec2(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y),0);
+			b2Body *b2;
+			b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
+			shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
+			b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (default)
+			bd.position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
+			b2 = m_world->CreateBody(&bd);
 			jd.Initialize(b2,gear[i],anchor);
 			rev_joint_gear[i] = (b2RevoluteJoint*)m_world->CreateJoint(&jd);
 		}
