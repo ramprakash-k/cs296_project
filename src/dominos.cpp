@@ -43,7 +43,9 @@ double pi = 3.14159265359;
 namespace cs296
 {
   //!  This constructor defines all the bodies present in the simulation.
-  
+	b2Body* box1;
+	b2Body* gear[6];
+	b2Body* spherebody[20];
 	dominos_t::dominos_t()
 	{
 	    //! \b Ground: \n
@@ -64,8 +66,8 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
-	    float xb1=0.0,yb1=22.5;
-	    
+	    float xb1=30.0,yb1=22.5;
+	    m_world->SetGravity(b2Vec2(0,-50));
 	    b2Body* b1;
 		b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
 		shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
@@ -75,24 +77,22 @@ namespace cs296
 		b1 = m_world->CreateBody(&bd);
 		b1->CreateFixture(&shape1, 0.0f);
 	    
-		b2Body* box1;
-		b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (dynamic, position -10,15, fixed rotation)
+	    b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (dynamic, position -10,15, fixed rotation)
 		//~ bd1->type = b2_dynamicBody;
 		bd1->fixedRotation=false;
 		bd1->position.Set(xb1,yb1);
 		b2FixtureDef f;
 		f.density=1;
 		f.friction = 0;
-		f.restitution = 0;
+		f.restitution = 0.0;
 		box1 = m_world->CreateBody(bd1);
 		b2EdgeShape shape;
 		
-		b2Body* spherebody;
 		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (1 radius circles)
-		circle.m_radius = 1;	
+		circle.m_radius = 0.75;	
 		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 100, friction 0, restitution 0)
 		ballfd.shape = &circle;
-		ballfd.density = 100.0f;
+		ballfd.density = 30.0f;
 		ballfd.friction = 0.0f;
 		ballfd.restitution = 0.0f;
 		b2BodyDef ballbd;
@@ -100,118 +100,125 @@ namespace cs296
 		b2Vec2 a[4];
 		b2PolygonShape ss;
 		
+		float temp=pi/10;
 		for(int i=0;i<20;i++)
 		{
 			int j=i+1;
-			a[0].Set(20.f*sin(i*pi/10),20.f*cos(i*pi/10));
-			a[1].Set(20.f*sin(j*pi/10),20.f*cos(j*pi/10));
-			a[2].Set(19.9f*sin(j*pi/10),19.9f*cos(j*pi/10));
-			a[3].Set(19.9f*sin(i*pi/10),19.9f*cos(i*pi/10));
+			a[0].Set(20.f*sin(i*pi/10+temp),20.f*cos(i*pi/10+temp));
+			a[1].Set(20.f*sin(j*pi/10+temp),20.f*cos(j*pi/10+temp));
+			a[2].Set(19.9f*sin(j*pi/10+temp),19.9f*cos(j*pi/10+temp));
+			a[3].Set(19.9f*sin(i*pi/10+temp),19.9f*cos(i*pi/10+temp));
 			ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
-			a[0].Set(12.f*sin(i*pi/10),12.f*cos(i*pi/10));
-			a[1].Set(12.f*sin(j*pi/10),12.f*cos(j*pi/10));
-			a[2].Set(11.9f*sin(j*pi/10),11.9f*cos(j*pi/10));
-			a[3].Set(11.9f*sin(i*pi/10),11.9f*cos(i*pi/10));
+			a[0].Set(16.f*sin(i*pi/10),16.f*cos(i*pi/10));
+			a[1].Set(16.f*sin(j*pi/10),16.f*cos(j*pi/10));
+			a[2].Set(15.9f*sin(j*pi/10),15.9f*cos(j*pi/10));
+			a[3].Set(15.9f*sin(i*pi/10),15.9f*cos(i*pi/10));
 			ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
-			shape.Set(b2Vec2(12.f*sin(i*pi/10),12.f*cos(i*pi/10)),b2Vec2(20.f*sin(j*pi/10),20.f*cos(j*pi/10)));
+			shape.Set(b2Vec2(16.f*sin(i*pi/10),16.f*cos(i*pi/10)),b2Vec2(20.f*sin(j*pi/10),20.f*cos(j*pi/10)));
 			f.shape=(&shape);
 			box1->CreateFixture(&f);
+			ballbd.position.Set(xb1+17.f*sin(i*pi/10),yb1+17.f*cos(i*pi/10));
+			spherebody[i] = m_world->CreateBody(&ballbd);
+			ballfd.density=(i%2)*10+10;
+			spherebody[i]->CreateFixture(&ballfd);
+		}
+		{
+		//~ 
+		//~ ballbd.position.Set(xb1+-2,yb1 + 12.7);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+3.3,yb1 + 12.4);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+6.8,yb1 + 10.8);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+10,yb1 + 8);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+18.4,yb1 + 1.8);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+18.3,yb1 - 4.2);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+16.2,yb1 - 9.5);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+12.5,yb1 - 14);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+7.3,yb1 - 17.2);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+1.7,yb1 - 18.6);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-0.6,yb1 - 18.7);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-6.3,yb1 - 17.6);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-11.6,yb1 - 14.9);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-15.7,yb1 - 10.6);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-11.6,yb1 - 5.9);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-12.7,yb1 - 2);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-12.7,yb1 + 2.1);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-11.4,yb1 + 5.8);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-9.1,yb1 + 9.2);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
+		//~ 
+		//~ ballbd.position.Set(xb1+-5.7,yb1 + 11.3);
+		//~ spherebody = m_world->CreateBody(&ballbd);
+		//~ spherebody->CreateFixture(&ballfd);
 		}
 		
-		ballbd.position.Set(xb1+-2,yb1 + 12.7);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+3.3,yb1 + 12.4);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+6.8,yb1 + 10.8);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+10,yb1 + 8);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+18.4,yb1 + 1.8);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+18.3,yb1 - 4.2);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+16.2,yb1 - 9.5);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+12.5,yb1 - 14);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+7.3,yb1 - 17.2);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+1.7,yb1 - 18.6);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-0.6,yb1 - 18.7);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-6.3,yb1 - 17.6);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-11.6,yb1 - 14.9);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-15.7,yb1 - 10.6);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-11.6,yb1 - 5.9);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-12.7,yb1 - 2);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-12.7,yb1 + 2.1);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-11.4,yb1 + 5.8);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-9.1,yb1 + 9.2);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
-		ballbd.position.Set(xb1+-5.7,yb1 + 11.3);
-		spherebody = m_world->CreateBody(&ballbd);
-		spherebody->CreateFixture(&ballfd);
-		
 		b2RevoluteJointDef jd;
+		b2RevoluteJoint* box1_rev;
 		b2Vec2 anchor;	//! Variable: anchor (b2Vec2): position -37,40
 		anchor.Set(xb1,yb1);
 		jd.Initialize(b1, box1, anchor);
-		m_world->CreateJoint(&jd);
-		box1->SetAngularVelocity(-pi/3);
+		box1_rev=(b2RevoluteJoint*)m_world->CreateJoint(&jd);
+		//~ box1->SetAngularVelocity(-pi/3);
 		
-
-		b2Body* gear[6];
+		
 		float clock_center_x=-30.0f,clock_center_y=20.0f;
-		float 	gear_center_x[]={28,15.2,15.2,0.0,0.0,-14.1},
+		float 	gear_center_x[]={28,14.6,14.6,0.0,0.0,-13.6},
 				gear_center_y[]={-4.5,7.0,7.0,0.0,0.0,7.0};
-		float p=0.5,d=0.9;
-		float gear_angle[]={0.0,0.0,0.0,0.0,0.0,5.0};
+		float p=0.5,d=0.85;
+		float gear_angle[]={0.0,0.0,0.49,0.0,0.0,0.19};
 		int gear_teeth[]={10,72,24,72,18,72};
 		b2RevoluteJoint* rev_joint_gear[6];
 		//[ 9 tooth motor gear,
@@ -220,6 +227,9 @@ namespace cs296
 		//  72 tooth intermediate, 
 		//  18 tooth secondary, 
 		//  72 tooth hour]
+		f.density=0.01;
+		
+		
 		 enum _entityCategory {
 			g0	=	0x0001,
 			g1	=	0x0002,
@@ -228,7 +238,7 @@ namespace cs296
 			g4	=	0x0010,
 			g5	=	0x0020,
 		  };
-		for(int i=0;i<6;i++){
+		for(int i=1;i<6;i++){
 			if(i==0){
 				f.filter.categoryBits	=	g0;
 				f.filter.maskBits		=	g1;
@@ -259,6 +269,7 @@ namespace cs296
 			float temp_angle=gear_angle[i];
 
 			bd1->position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
+			bd1->type=b2_dynamicBody;
 			gear[i] = m_world->CreateBody(bd1);
 			b2CircleShape cirle;
 			circle.m_p.Set(0.0,0.0);
@@ -270,10 +281,10 @@ namespace cs296
 			float theta=pi/gear_teeth[i];
 			for(int j=0;j<gear_teeth[i];j++){
 				toothShape[0]=b2Vec2(r0*cos(temp_angle),r0*sin(temp_angle));
-				toothShape[1]=b2Vec2(r1*cos(temp_angle),r1*sin(temp_angle));
-				toothShape[2]=b2Vec2(r2*cos(temp_angle+theta/3),r2*sin(temp_angle+theta/3));
-				toothShape[3]=b2Vec2(r2*cos(temp_angle+2*theta/3),r2*sin(temp_angle+2*theta/3));
-				toothShape[4]=b2Vec2(r1*cos(temp_angle+theta),r1*sin(temp_angle+theta));
+				toothShape[1]=b2Vec2(r1*cos(temp_angle+theta/10),r1*sin(temp_angle+theta/10));
+				toothShape[2]=b2Vec2(r2*cos(temp_angle+2*theta/5),r2*sin(temp_angle+2*theta/5));
+				toothShape[3]=b2Vec2(r2*cos(temp_angle+3*theta/5),r2*sin(temp_angle+3*theta/5));
+				toothShape[4]=b2Vec2(r1*cos(temp_angle+9*theta/10),r1*sin(temp_angle+9*theta/10));
 				toothShape[5]=b2Vec2(r0*cos(temp_angle+theta),r0*sin(temp_angle+theta));
 				ss.Set(toothShape,6);
 				f.shape=(&ss);
@@ -282,10 +293,11 @@ namespace cs296
 			}
 			
 			anchor.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
-			jd.Initialize(b1,gear[i],anchor);
+			b2Body *b2=new b2Body(*b1);
+			b2->SetTransform(b2Vec2(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y),0);
+			jd.Initialize(b2,gear[i],anchor);
 			rev_joint_gear[i] = (b2RevoluteJoint*)m_world->CreateJoint(&jd);
 		}
-		gear[5]->SetAngularVelocity(2*pi);
 		
 		b2GearJointDef grj;
 		grj.bodyA = gear[3];
@@ -301,9 +313,36 @@ namespace cs296
 		grj.joint2 = rev_joint_gear[2];
 		grj.ratio = -1;
 		m_world->CreateJoint(&grj);
+		
+		grj.bodyA = gear[1];
+		grj.bodyB = box1;
+		grj.joint1 = rev_joint_gear[1];
+		grj.joint2 = box1_rev;
+		grj.ratio = -1;
+		//~ m_world->CreateJoint(&grj);
+		
+		
 	}
-
-
+	
+	void dominos_t::keyboard(unsigned char key)
+	{
+		if(key=='d')
+		{
+			box1->SetType(b2_dynamicBody);
+			box1->SetAngularVelocity(-pi/2);
+		}
+		if(key=='s')
+		{
+			box1->SetType(b2_staticBody);
+			for(int i=0;i<20;i++)
+				spherebody[i]->GetFixtureList()->SetRestitution(0);
+		}
+		if(key=='g')
+			gear[1]->SetAngularVelocity(-pi/3);
+		if(key=='t')
+			for(int i=0;i<20;i++)
+				spherebody[i]->GetFixtureList()->SetRestitution(1);
+	}
 
 
 
