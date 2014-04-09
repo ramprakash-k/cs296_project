@@ -104,7 +104,7 @@ namespace cs296
 		b2PolygonShape ss;
 		
 		float temp=pi/10;
-		float outr=20,inr=17,inr2=15,diff=1;
+		float outr=20,inr=17,inr2=15,diff=-1;
 		
 		for(int i=0;i<20;i++)
 		{
@@ -258,7 +258,7 @@ namespace cs296
 		{
 			box1->SetType(b2_dynamicBody);
 			box1_rev->SetMaxMotorTorque(1000000);
-			box1_rev->SetMotorSpeed(-pi/5);
+			box1_rev->SetMotorSpeed(pi/5);
 		}
 		if(key=='s')
 		{
