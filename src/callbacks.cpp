@@ -1,19 +1,17 @@
 /* 
- * Base code for CS 296 Software Systems Lab 
+ * Project for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+ * Group 1 : Siddharth Patel , Ramprakash K , Viplov Jain
  */
 
 //! These are user defined include files
 //! Included in double quotes - the path to find these has to be given at compile time
 #include "callbacks.hpp"
-
 #ifndef __APPLE__
 #include "GL/glui.h"
 #else
 #include "GL/glui.h"
 #endif
-
 //! The namespace protects the global variables and other names from
 //! clashes in scope. Read about the use of named and unnamed
 //! namespaces in C++ Figure out where all the datatypes used below
@@ -108,8 +106,7 @@ namespace cs296
       
     //! Press 'r' to reset.
     case 'r':
-      delete test;
-      test = entry->create_fcn();
+	  test->keyboard('r');
       break;
       
       //! Press 'p' to pause.
@@ -281,10 +278,7 @@ namespace cs296
   
   void callbacks_t::restart_cb(int)
   {
-    delete test;
-    entry = cs296::sim;
-    test = entry->create_fcn();
-    resize_cb(width, height);
+	test->keyboard('r');
   }
   
   void callbacks_t::pause_cb(int)
