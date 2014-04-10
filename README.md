@@ -1,7 +1,7 @@
 cs296_project
 =============
 
-Box2D perpetual machine, gear clock
+Box2D perpetual motion machine run by motor driving gear stop clock
 
 
 Siddharth Patel 120050001
