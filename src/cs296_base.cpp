@@ -88,7 +88,8 @@ void base_sim_t::draw_title(int x, int y, const char *string)
 }
 
 void base_sim_t::step(settings_t* settings)
-{	
+{
+  //! Code to obtain the time from the position of the gears and print it on the screen.
 	double pi  = 3.14159265359;
 	int sec_d  = (int)(gear[6]->GetAngle()*180/pi);sec_d=(sec_d%360)/6;
 	int min_d  = (int)(gear[1]->GetAngle()*180/pi);min_d=(min_d%360)/6;;
