@@ -31,7 +31,7 @@
 #else
 	#include "GL/freeglut.h"
 #endif
-
+#include <stdio.h>
 #include <cstring>
 #include <math.h>
 using namespace std;
@@ -39,19 +39,19 @@ using namespace std;
 #include "dominos.hpp"
 
 double pi = 3.14159265359;
-
+b2RevoluteJoint* box1_rev;
+b2Body* box1;
+b2GearJoint* gr[5];
+b2Body* gear[10];
 namespace cs296
 {
   //!  This constructor defines all the bodies present in the simulation.
 	
-	b2RevoluteJoint* box1_rev;
-	b2Body* box1;
 	dominos_t::dominos_t()
 	{
 	    //! \b Ground: \n
 	    //! Variable: b1 (b2Body*):
-	    //! It is a pointer to the body ground 
-	    
+	    //! It is a pointer to the body ground
 	    {
 			b2Body* b1;
 			b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
@@ -66,12 +66,11 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
-	    float xb1=24.1;		//! Variable: xb1 (float): x coordinate of the rotating wheel
-	    float yb1=22.5; 	//! Variable: yb1 (float): y coordinate of the rotating wheel
+	    float xb1=24.1,yb1=22.5;
 	    
 	    m_world->SetGravity(b2Vec2(0,-100));
 	    
-	    b2Body* b1;				//! Variable: b1 (b2Body*): Ground object
+	    b2Body* b1;
 		b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
 		shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
 		b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (default)
@@ -92,10 +91,10 @@ namespace cs296
 		box1 = m_world->CreateBody(bd1);
 		b2EdgeShape shape;
 		
-		b2Body* spherebody;		//! Variable: spherebody(b2CircleShape): Sphere Object (small radius ball with high density and low friction)
-		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (0.8 radius circles)
+		b2Body* spherebody;
+		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (1 radius circles)
 		circle.m_radius = 0.8;	
-		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 50, friction 0, restitution 0)
+		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 100, friction 0, restitution 0)
 		ballfd.shape = &circle;
 		ballfd.density = 50.0f;
 		ballfd.friction = 0.0f;
@@ -144,23 +143,24 @@ namespace cs296
 			spherebody->CreateFixture(&ballfd);
 		}
 		
-		b2RevoluteJointDef jd;	//! Variable: jd (b2RevoluteJointDef): The revolute joint
+		b2RevoluteJointDef jd;
 		b2Vec2 anchor;	//! Variable: anchor (b2Vec2): position -37,40
 		anchor.Set(xb1,yb1);
 		jd.Initialize(b1, box1, anchor);
 		jd.enableMotor = true;
 		box1_rev=(b2RevoluteJoint*)m_world->CreateJoint(&jd);
+		box1->SetType(b2_dynamicBody);
+		box1_rev->SetMaxMotorTorque(1000000);
+		box1_rev->SetMotorSpeed(pi/5);
 		
-		float 	clock_center_x=-30.0f,		//! Variable: clock_center_x (float): x coordinate of the center of the clock
-				clock_center_y=20.0f;		//! Variable: clock_center_y (float): y coordinate of the center of the clock
-		float 	gear_center_x[10]={54.1,14.6,14.6,0.0,0.0,-13.6,42.55,42.55,27.2,27.2},	//! Variable: gear_center_x (float[]): array of x coordinates of the center of gears w.r.t. the clock
-				gear_center_y[10]={2.5,7.0,7.0,0.0,0.0,7.0,7.0,7.0,0,0};	//! Variable: gear_center_y (float[]): array of y coordinates of the center of gears w.r.t. the clock
-		float 	p=0.5,		//! Variable: p (float): scale of the gears
-				d=0.85;		//! Variable: d (float): size of the teeth of gears
-		float 	gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1}; //! Variable: gear_angle (float[]): array of angles of the gears 
-		int 	gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};				//! Variable: gear_teeth (int[]): array of number of teeth of the gears 
-		b2RevoluteJoint* rev_joint_gear[10];								//! Variable: rev_joint_gear (b2RevoluteJoint*): array of revolute joint of the gears 
-		b2Body* gear[10];													//! Variable: gear (b2Body*[]): array of gear objects 
+		float clock_center_x=-30.0f,clock_center_y=20.0f;
+		float 	gear_center_x[10]={54.1,14.6,14.6,0.0,0.0,-13.6,42.55,42.55,27.2,27.2},	//43.45
+				gear_center_y[10]={2.5,7.0,7.0,0.0,0.0,7.0,7.0,7.0,0,0};
+		float p=0.5,d=0.85;
+		float gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1};
+		int gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};
+		b2RevoluteJoint* rev_joint_gear[10];
+		
 		//~ 10 tooth motor gear,	0
 		//~ 60 tooth second, 		6
 		//~ 9 tooth secondary, 		7
@@ -272,35 +272,35 @@ namespace cs296
 		grj.joint1 = rev_joint_gear[3];
 		grj.joint2 = rev_joint_gear[4];
 		grj.ratio = -1;
-		m_world->CreateJoint(&grj);
+		gr[0]=(b2GearJoint*)m_world->CreateJoint(&grj);
 		
 		grj.bodyA = gear[1];
 		grj.bodyB = gear[2];
 		grj.joint1 = rev_joint_gear[1];
 		grj.joint2 = rev_joint_gear[2];
 		grj.ratio = -1;
-		m_world->CreateJoint(&grj);
+		gr[1]=(b2GearJoint*)m_world->CreateJoint(&grj);
 		
 		grj.bodyA = gear[6];
 		grj.bodyB = gear[7];
 		grj.joint1 = rev_joint_gear[6];
 		grj.joint2 = rev_joint_gear[7];
 		grj.ratio = -1;
-		m_world->CreateJoint(&grj);
+		gr[2]=(b2GearJoint*)m_world->CreateJoint(&grj);
 		
 		grj.bodyA = gear[9];
 		grj.bodyB = gear[8];
 		grj.joint1 = rev_joint_gear[9];
 		grj.joint2 = rev_joint_gear[8];
 		grj.ratio = -1;
-		m_world->CreateJoint(&grj);
+		gr[3]=(b2GearJoint*)m_world->CreateJoint(&grj);
 		
 		grj.bodyA = gear[0];
 		grj.bodyB = box1;
 		grj.joint1 = rev_joint_gear[0];
 		grj.joint2 = box1_rev;
 		grj.ratio = -1;
-		m_world->CreateJoint(&grj);
+		gr[4]=(b2GearJoint*)m_world->CreateJoint(&grj);
 		
 	}
 	
@@ -312,14 +312,23 @@ namespace cs296
 			box1_rev->SetMaxMotorTorque(1000000);
 			box1_rev->SetMotorSpeed(pi/5);
 		}
-		if(key=='s')
+		else if(key=='s')
 		{
 			box1->SetType(b2_staticBody);
 			box1_rev->SetMaxMotorTorque(0);
 			box1_rev->SetMotorSpeed(0.0f);
 		}
-		if(key=='q')
+		else if(key=='q')
 			exit(0);
+		else if(key=='r')
+		{
+			for(int i=1;i<10;i++)
+				gear[i]->SetTransform(gear[i]->GetPosition(),0);
+		}
+		else
+		{
+			B2_NOT_USED(key);
+		}
 	}
 
 	sim_t *sim = new sim_t("Dominos", dominos_t::create);
