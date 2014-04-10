@@ -62,8 +62,8 @@ for i in range(start,end):
 	else:
 		less = re.sub('\\\\textless',r'<',tex[i])
 		grt = re.sub('\\\\textgreater',r'>',less)
-		cite= re.sub('\\\\cite{[a-z]*}','',grt)
-		ital = re.sub('\\\\textit{([a-zA-Z ()/0-9\\\_:.<>\-\+]*)}',r'<i>\1</i>',cite)
+		cite= re.sub('\\\\cite{[a-z]*}','',)
+		ital = re.sub('\\\\textit{([a-zA-Z ()/0-9\\\_:.<>\-\+]*)}',r'<i>\1</i>',grt)
 		bk = re.sub('\\\_',r'_',ital)
 		sec = re.sub('\\\section{(.*)}',r'<li><h2>\1</h2></li>',bk)
 		subsec = re.sub('\\\subsection{(.*)}',r'<li><b>\1</b></li>',sec)

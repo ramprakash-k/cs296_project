@@ -20,12 +20,9 @@ SRCDIR = $(PROJECT_ROOT)/src
 OBJDIR = $(PROJECT_ROOT)/obj
 BINDIR = $(PROJECT_ROOT)/bin
 DOCDIR = $(PROJECT_ROOT)/doc
-LATEX  = cs296_report_01
+LATEX  = cs296_project_report
 # Target
 TARGET 		= cs296_01_exe
-LIB_TARGET 	= cs296_01_exelib
-SLIBT		= libCS296test.a
-DLIBT		= libCS296test.so
 
 # Library Paths
 BOX2D_ROOT=$(EXTERNAL_ROOT)
@@ -106,6 +103,6 @@ clean:
 	@$(ECHO) "Done"
 	
 report:
-	@cd $(DOCDIR); latex $(LATEX).tex; bibtex $(LATEX); latex $(LATEX).tex; latex $(LATEX).tex; convert $(LATEX).dvi $(LATEX).pdf
+	@cd $(DOCDIR); pdflatex $(LATEX).tex; bibtex $(LATEX); pdflatex $(LATEX).tex; pdflatex $(LATEX).tex; 
 distclean: clean
 	@cd $(BOX2D_ROOT) && $(RM) -rf include/* src/Box2D lib/*

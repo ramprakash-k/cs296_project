@@ -15,14 +15,13 @@
 } 
 \date{\today} 
 
-\begin{document} 
+\begin{document}
 \maketitle 
 
-
-\section{Introduction}In this document we will provide a detailed analysis of our CS296 project. It contains a system of gears kept in motion by a perpetual wheel that is run by a motor.
+\section{Introduction}In this document we will provide a detailed analysis of our CS296 project\cite{main}. It contains a system of gears\cite{wikigr} kept in motion by a perpetual wheel that is run by a motor.
 \section{Physics behind the simulation.}
 \subsection{Perpetual Motion}
-Perpetual motion is the action of the device that once set in motion would continue in motion forever, with no additional energy required to maintain it. Such devices are impractical in real life due to energy loses due to friction,however those machines which are close to perfect perpetual motion can be used to drive other engines such as clocks/turbines. This idea has been implemented to drive our mechanical clock. Even in Box2D, we were not able to simulate a perfect perpetual motion machine since the restitution of the bodies were to be less than 1 which meant that there would be energy loss. Hence, we had to attach a motor to keep it in motion.
+Perpetual motion\cite{wikiper} is the action of the device that once set in motion would continue in motion forever, with no additional energy required to maintain it. Such devices are impractical in real life due to energy loses due to friction,however those machines which are close to perfect perpetual motion can be used to drive other engines such as clocks/turbines. This idea has been implemented to drive our mechanical clock. Even in Box2D, we were not able to simulate a perfect perpetual motion machine since the restitution of the bodies were to be less than 1 which meant that there would be energy loss. Hence, we had to attach a motor to keep it in motion.
 \subsection{Perpetual Wheel}
 The wheel we used in this project is the modified version of the Bhaskara Wheel which was one of the most earliest recorded man-made perpetual wheel. The idea was that the moment of inertia about the centre of the weights (spheres) that are descending is more than that of the weights that are ascending (since they are farther away from the centre) and hence, the wheel is supposed to experience continuous torque in a single direction.
 
@@ -33,7 +32,7 @@ The wheel we used in this project is the modified version of the Bhaskara Wheel 
 \end{figure}
 
 \subsection{Gear Clock}
-Mechanical clocks are made using gears, in which there are gears for each hand of the clock, and intermediate gears to connect them in appropriate ratios so that they rotate in the exact angular velocity as they denote.
+Mechanical clocks are made using gears\cite{wikiclkwrk}, in which there are gears for each hand of the clock, and intermediate gears to connect them in appropriate ratios so that they rotate in the exact angular velocity as they denote.
 
 \begin{figure}[ht!]
 \centering
@@ -41,7 +40,7 @@ Mechanical clocks are made using gears, in which there are gears for each hand o
 \caption{Gear Clock Design}
 \end{figure}
 
-Our perpetual wheel is attached to a motor that drives it at an angular speed of \textit{pi/5}.\\
+Our perpetual wheel\cite{wikiper} is attached to a motor that drives it at an angular speed of \textit{pi/5}.\\
 We have a 10 tooth gear attached to our perpetual wheel that drives the 60 tooth gear denoting the seconds hand.\\
 The 60 tooth gear has a 9 tooth gear attached to it which drives a 90 tooth intermediate gear.\\
 The 90 tooth gear has a 12 tooth gear attached to it which drives the 72 tooth gear denoting the minute hand.\\
@@ -66,7 +65,7 @@ Thus, in 12 rotations of the minute hand gear, the hour hand gear would have mov
 
 \section{Design of the Project}
 \subsection{Original Design}
-In our original design, we intended to have a perfect perpetual motion machine that drives the gear clock.
+In our original design\cite{vdo}, we intended to have a perfect perpetual motion machine\cite{wikiper} that drives the gear\cite{wikigr} clock\cite{wikicl}.
 
 \begin{figure}[ht!]
 \centering
@@ -75,7 +74,7 @@ In our original design, we intended to have a perfect perpetual motion machine t
 \end{figure}
 
 \subsection{Final Design and Changes made in the original design}
-In our final design, we added a motor to our perpetual wheel to move it at a constant angular velocity of \textit{pi/5 rad/sec}. We also moved the position of the gears to make them visible (Since they were of same size and would not be visible if one was over the other).
+In our final design\cite{main}, we added a motor to our perpetual wheel to move it at a constant angular velocity of \textit{pi/5 rad/sec}. We also moved the position of the gears to make them visible (Since they were of same size and would not be visible if one was over the other).
 
 \begin{figure}[ht!]
 \centering
@@ -146,5 +145,9 @@ From the above results, we infer that the function \textit{b2DynamicTree::Query\
 \caption{Call Graph for \textit{Debug} mode : 10000 iterations}
 \end{figure}
 We observe that in general, the number of states/nodes in the call graph of the \textit{Debug} mode is greater than the number of states/nodes in the call graph of the \textit{Release} mode. This is because there was optimisation done in \textit{Release} mode, and also because extra calls to debugging functions are called because the mode is \textit{Debug}, which generates additional data to aid debugging.
+
+
+\bibliographystyle{plain}
+\bibliography{cs296_project_report}
 
 \end{document}
