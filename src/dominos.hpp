@@ -17,9 +17,9 @@
 */
 
 /* 
- * Base code for CS 296 Software Systems Lab 
+ * Project for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+ * Group 1 : Siddharth Patel , Ramprakash K , Viplov Jain
  */
 
 #ifndef _DOMINOS_HPP_
@@ -28,13 +28,15 @@
 namespace cs296
 {
   //! This is the class that sets up the Box2D simulation world
-  //! Notice the public inheritance - why do we inherit the base_sim_t class?
+  //! Notice the public inheritance - why do we inherit the base_sim_t class?3
+  
   class dominos_t : public base_sim_t
   {
   public:
     
     dominos_t();
     void keyboard(unsigned char key);
+    void rm();
     static base_sim_t* create()
     {
       return new dominos_t;
