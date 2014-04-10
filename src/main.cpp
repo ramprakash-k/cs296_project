@@ -127,7 +127,7 @@ int main(int argc, char** argv)
   glutInitWindowSize(width, height);
 
   char title[50];
-  sprintf(title, "CS296 Base Code. Running on Box2D %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
+  sprintf(title, "CS296 Project. Running on Box2D %d.%d.%d", b2_version.major, b2_version.minor, b2_version.revision);
   main_window = glutCreateWindow(title);
 
   //! Here we setup all the callbacks we need
