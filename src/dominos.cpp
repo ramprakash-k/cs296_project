@@ -321,5 +321,5 @@ namespace cs296
 		}
 	}
 
-	sim_t *sim = new sim_t("Dominos", dominos_t::create);
+	sim_t *sim = new sim_t("Project", dominos_t::create);
 }
