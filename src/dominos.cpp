@@ -66,20 +66,19 @@ namespace cs296
 			b1->CreateFixture(&f);
 		}
 	    
-	    float xb1=24.1,yb1=22.5;
+	    float xb1=24.1,yb1=22.5;	//! Variable: xb1,yb1 (float): Center of the rotating body
 	    
 	    m_world->SetGravity(b2Vec2(0,-100));
 	    
-	    b2Body* b1;
-		b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
+	    b2Body* b1;				//! Variable: b1 (b2Body*): Body at the center of the rotating body
+		b2EdgeShape shape1; 	//! Variable: shape1 (b2EdgeShape): Shape of the body (0 length line)
 		shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
-		b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (default)
+		b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (position xb1,yb1)
 		bd.position.Set(xb1,yb1);
 		b1 = m_world->CreateBody(&bd);
 		b1->CreateFixture(&shape1, 0.0f);
 	    
-	    b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (dynamic, position -10,15, fixed rotation)
-		//~ bd1->type = b2_dynamicBody;
+	    b2BodyDef *bd1 = new b2BodyDef;	//! Variable: bd (b2BodyDef*): Body properties (position xb1,yb1, fixed rotation)
 		bd1->fixedRotation=false;
 		bd1->position.Set(xb1,yb1);
 		b2FixtureDef f;
@@ -88,13 +87,13 @@ namespace cs296
 		f.restitution = 0.0;
 		f.filter.categoryBits = 0x0400;
 		f.filter.maskBits = 0x400;
-		box1 = m_world->CreateBody(bd1);
+		box1 = m_world->CreateBody(bd1);	//! Variable: box1 (b2Body*): pointer to the rotating body
 		b2EdgeShape shape;
 		
-		b2Body* spherebody;
-		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (1 radius circles)
+		b2Body* spherebody;		//! Variable: spherebody (b2Body*): body of the spheres inside the roating body
+		b2CircleShape circle;	//! Variable: circle (b2CircleShape): Shape of the spheres (0.8 radius circles)
 		circle.m_radius = 0.8;	
-		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 100, friction 0, restitution 0)
+		b2FixtureDef ballfd;	//! Variable: ballfd (b2FixtureDef): Fixture of the spheres (density 50, friction 0, restitution 0)
 		ballfd.shape = &circle;
 		ballfd.density = 50.0f;
 		ballfd.friction = 0.0f;
@@ -103,11 +102,11 @@ namespace cs296
 		ballfd.filter.maskBits = 0x400;
 		b2BodyDef ballbd;
 		ballbd.type = b2_dynamicBody;
-		b2Vec2 a[4];
-		b2PolygonShape ss;
+		b2Vec2 a[4];			//! Variable: a[4] (b2Vec2): corners of the polygon
+		b2PolygonShape ss;		//! Variable: ss (b2PolygonShape): polygon box making up the rotating body
 		
 		float temp=pi/10;
-		float outr=20,inr=17,inr2=15,diff=-1;
+		float outr=20,inr=17,inr2=15,diff=-1;	//! Variable: outr,inr,inr2,diff: (float): outer radius, inner radius (2), slope of the slant
 		
 		for(int i=0;i<20;i++)
 		{
@@ -117,11 +116,6 @@ namespace cs296
 			a[2].Set((outr-0.1)*sin(j*pi/10+temp),(outr-0.1)*cos(j*pi/10+temp));
 			a[3].Set((outr-0.1)*sin(i*pi/10+temp),(outr-0.1)*cos(i*pi/10+temp));
 			ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
-			//~ a[0].Set(inr*sin(i*pi/10),inr*cos(i*pi/10));
-			//~ a[1].Set(inr*sin(j*pi/10),inr*cos(j*pi/10));
-			//~ a[2].Set((inr-0.1)*sin(j*pi/10),(inr-0.1)*cos(j*pi/10));
-			//~ a[3].Set((inr-0.1)*sin(i*pi/10),(inr-0.1)*cos(i*pi/10));
-			//~ ss.Set(a,4);f.shape=(&ss);box1->CreateFixture(&f);
 			a[0].Set(inr*sin(i*pi/10),inr*cos(i*pi/10));
 			a[1].Set(outr*sin((i+diff)*pi/10),outr*cos((i+diff)*pi/10));
 			a[2].Set(outr*sin(0.01+(i+diff)*pi/10),outr*cos(0.01+(i+diff)*pi/10));
@@ -143,37 +137,33 @@ namespace cs296
 			spherebody->CreateFixture(&ballfd);
 		}
 		
-		b2RevoluteJointDef jd;
-		b2Vec2 anchor;	//! Variable: anchor (b2Vec2): position -37,40
+		b2RevoluteJointDef jd;	//! Variable: jd (b2RevoluteJointDef): joint connecting rotating body to fixed body
+		b2Vec2 anchor;			//! Variable: anchor (b2Vec2): position xb1,yb1
 		anchor.Set(xb1,yb1);
 		jd.Initialize(b1, box1, anchor);
 		jd.enableMotor = true;
-		box1_rev=(b2RevoluteJoint*)m_world->CreateJoint(&jd);
-		box1->SetType(b2_dynamicBody);
-		box1_rev->SetMaxMotorTorque(1000000);
-		box1_rev->SetMotorSpeed(pi/5);
+		box1_rev=(b2RevoluteJoint*)m_world->CreateJoint(&jd);	//! Variable: box1_rev (b2RevoluteJoint*): joint to which motor is attached
 		
-		float clock_center_x=-30.0f,clock_center_y=20.0f;
-		float 	gear_center_x[10]={54.1,14.6,14.6,0.0,0.0,-13.6,42.55,42.55,27.2,27.2},	//43.45
-				gear_center_y[10]={2.5,7.0,7.0,0.0,0.0,7.0,7.0,7.0,0,0};
-		float p=0.5,d=0.85;
-		float gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1};
-		int gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};
-		b2RevoluteJoint* rev_joint_gear[10];
-		
-		//~ 10 tooth motor gear,	0
-		//~ 60 tooth second, 		6
-		//~ 9 tooth secondary, 		7
-		//~ 90 tooth intermediate, 	8
-		//~ 12 tooth secondary, 	9
-		//~ 72 tooth minute,		1
-		//~ 24 tooth secondary, 	2
-		//~ 72 tooth intermediate, 	3
-		//~ 18 tooth secondary, 	4
-		//~ 72 tooth hour,			5
+		float clock_center_x=-30.0f,clock_center_y=20.0f;		//! Variable: clock_center_x,clock_center_y (float): center of the clock
+		float 	gear_center_x[10]={54.1,14.6,14.6,0.0,0.0,-13.6,42.55,42.55,27.2,27.2},	//! Variable: gear_center_x[10] (float): x centers of the gears
+				gear_center_y[10]={2.5,7.0,7.0,0.0,0.0,7.0,7.0,7.0,0,0};				//! Variable: gear_center_y[10] (float): y centers of the gears
+		float p=0.5,d=0.85;													//! Variable: p,d(float): proportion of gear radius to number of teeth, length of tooth of gear
+		float gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1};	//! Variable: gear_angle[10] (float): initial angle of the first tooth
+		int gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};					//! Variable: gear_teeth[10] (int): number of teeth in each gear.
+		b2RevoluteJoint* rev_joint_gear[10];					//! Variable: rev_joint_gear[10] (b2RevoluteJoint*): joints rotating the gears about their centers
+		//! 10 tooth motor gear,	0 \n
+		//! 60 tooth second, 		6 \n
+		//! 9 tooth secondary, 		7 \n
+		//! 90 tooth intermediate, 	8 \n
+		//! 12 tooth secondary, 	9 \n
+		//! 72 tooth minute,		1 \n
+		//! 24 tooth secondary, 	2 \n
+		//! 72 tooth intermediate, 	3 \n
+		//! 18 tooth secondary, 	4 \n
+		//! 72 tooth hour,			5 \n
 		f.density=0.01;
 		
-		enum _entityCategory {
+		enum _entityCategory {			//! _entityCategory : to specify which objects collide and which dont
 			g0	=	0x0001,
 			g1	=	0x0002,
 			g2	=	0x0004,
@@ -227,20 +217,20 @@ namespace cs296
 				f.filter.maskBits		=	g1;
 				}
 			int t=2*gear_teeth[i];
-			float r0=p*t/(2*pi);
-			float r1=r0+d/2,r2=r0+d;
+			float r0=p*t/(2*pi);			//! Variable: r0 (float): radius of the gear
+			float r1=r0+d/2,r2=r0+d;		//! Variable: r1,r2 (float): radius of the points in the tooth
 			float temp_angle=gear_angle[i];
 
 			bd1->position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			bd1->type=b2_dynamicBody;
 			gear[i] = m_world->CreateBody(bd1);
-			b2CircleShape cirle;
+			b2CircleShape cirle;			//! Variable: circle (b2CircleShape): shape of the gear (circle of radius r0)
 			circle.m_p.Set(0.0,0.0);
 			circle.m_radius=r0;
 			f.shape=(&circle);
 			gear[i]->CreateFixture(&f);
 
-			b2Vec2 toothShape[6];
+			b2Vec2 toothShape[6];			//! Variable: toothShape[6] (b2Vec2): corners of the tooth polygon
 			float theta=pi/gear_teeth[i];
 			for(int j=0;j<gear_teeth[i];j++){
 				toothShape[0]=b2Vec2(r0*cos(temp_angle),r0*sin(temp_angle));
@@ -257,16 +247,16 @@ namespace cs296
 			
 			anchor.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			b2Body *b2;
-			b2EdgeShape shape1; 	//! Variable: shape (b2EdgeShape): Shape of the ground (180 length line)
+			b2EdgeShape shape1; 	//! Variable: shape1 (b2EdgeShape): Shape of the local ground for gear (0 length line)
 			shape1.Set(b2Vec2(0,0), b2Vec2(0,0));
-			b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (default)
+			b2BodyDef bd; 		//! Variable: bd (b2BodyDef): Body properties (position = center of gear)
 			bd.position.Set(gear_center_x[i]+clock_center_x,gear_center_y[i]+clock_center_y);
 			b2 = m_world->CreateBody(&bd);
 			jd.Initialize(b2,gear[i],anchor);
 			rev_joint_gear[i] = (b2RevoluteJoint*)m_world->CreateJoint(&jd);
 		}
 		
-		b2GearJointDef grj;
+		b2GearJointDef grj;		//! Variable: grj (b2GearJointDef): gear joint that joins gears (3,4) (1,2) (6,7) (8,9) (0,box1)
 		grj.bodyA = gear[3];
 		grj.bodyB = gear[4];
 		grj.joint1 = rev_joint_gear[3];
@@ -304,7 +294,7 @@ namespace cs296
 		
 	}
 	
-	void dominos_t::keyboard(unsigned char key)
+	void dominos_t::keyboard(unsigned char key)	//! Function: void dominos_t::keyboard(unsigned char key): keyboard functions to start, stop and reset the clock
 	{
 		if(key=='m')
 		{
