@@ -1,7 +1,7 @@
 /* 
- * Base code for CS 296 Software Systems Lab 
+ * Project for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+ * Group 1 : Siddharth Patel , Ramprakash K , Viplov Jain
  */
 
 //! Notice the use of these pre-processor directives on top of each header file
@@ -23,6 +23,8 @@
 //! Included in double quotes - the path to find these has to be given at compile time
 #include "render.hpp"
 #include "cs296_base.hpp"
+
+extern int hour,minute,second;
 
 namespace cs296
 {
