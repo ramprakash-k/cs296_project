@@ -21,6 +21,7 @@ OBJDIR = $(PROJECT_ROOT)/obj
 BINDIR = $(PROJECT_ROOT)/bin
 DOCDIR = $(PROJECT_ROOT)/doc
 LATEX  = cs296_project_report
+INSTALLDIR = $(PROJECT_ROOT)/project
 # Target
 TARGET 		= cs296_01_exe
 
@@ -55,7 +56,9 @@ SRCS := $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(SRCS:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 OLS  := $(filter-out $(OBJDIR)/main.o,$(OBJS))
 
-.PHONY: setup exe clean distclean static dynamic exelib doc report
+.PHONY: setup exe clean distclean static dynamic exelib doc report all dist install
+
+all: exe doc report
 
 setup:
 	@$(ECHO) "Setting up compilation..."
@@ -95,14 +98,25 @@ doc:
 	@$(RM) -rf doc/html
 	@$(DOXYGEN) $(DOCDIR)/Doxyfile 2 > /dev/null
 	@$(ECHO) "Done"
+
 clean:
 	@$(ECHO) -n "Cleaning up...."
 	@$(RM) -rf obj bin
-	@$(RM) -rf $(DOCDIR)/html
+	@$(RM) -rf $(DOCDIR)/html $(DOCDIR)/$(LATEX).html
 	@$(RM) -rf $(DOCDIR)/$(LATEX).aux $(DOCDIR)/$(LATEX).bbl $(DOCDIR)/$(LATEX).log $(DOCDIR)/$(LATEX).dvi $(DOCDIR)/$(LATEX).pdf $(DOCDIR)/$(LATEX).blg
 	@$(ECHO) "Done"
 	
 report:
 	@cd $(DOCDIR); pdflatex $(LATEX).tex; bibtex $(LATEX); pdflatex $(LATEX).tex; pdflatex $(LATEX).tex; 
+	@cd scripts; python3 g01_gen_html.py;
+
 distclean: clean
 	@cd $(BOX2D_ROOT) && $(RM) -rf include/* src/Box2D lib/*
+
+dist: distclean
+	@cd ..; tar czf "cs296_g01_project.tar.gz" cs296_project;
+
+install: all
+	@mkdir $(INSTALLDIR)
+	@cp $(BINDIR)/$(TARGET) $(INSTALLDIR)/$(TARGET)
+	@cp -r $(DOCDIR) $(INSTALLDIR)/doc

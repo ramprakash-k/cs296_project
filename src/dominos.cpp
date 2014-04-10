@@ -150,7 +150,7 @@ namespace cs296
 		float p=0.5,d=0.85;													//! Variable: p,d(float): proportion of gear radius to number of teeth, length of tooth of gear
 		float gear_angle[10]={0.0,0.0,0.49,0.0,0.0,0.19,0.0,0.2,0.0,0.1};	//! Variable: gear_angle[10] (float): initial angle of the first tooth
 		int gear_teeth[10]={10,72,24,72,18,72,60,9,90,12};					//! Variable: gear_teeth[10] (int): number of teeth in each gear.
-		b2RevoluteJoint* rev_joint_gear[10];					//! Variable: rev_joint_gear[10] (b2RevoluteJoint*): joints rotating the gears about their centers
+		b2RevoluteJoint* rev_joint_gear[10];					//! Variable: rev_joint_gear[10] (b2RevoluteJoint*): joints rotating the gears about their centers\n
 		//! 10 tooth motor gear,	0 \n
 		//! 60 tooth second, 		6 \n
 		//! 9 tooth secondary, 		7 \n
