@@ -17,9 +17,9 @@
 */
 
 /* 
- * Base code for CS 296 Software Systems Lab 
+ * Project for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+ * Group 1 : Siddharth Patel , Ramprakash K , Viplov Jain
  */
 
 #include "render.hpp"
