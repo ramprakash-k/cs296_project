@@ -83,7 +83,7 @@ In our final design, we added a motor to our perpetual wheel to move it at a con
 \caption{Our Final Design}
 \end{figure}
 
-\subsection{Reasons for modification of our original design}
+\section{Reasons for modification of our original design}
 We had tried lot of possible combinations of the dimensions (mass, radius, length, gravity) of each body of the perpetual wheel to make it move perpetually, but could not as we were bound to keep restitution of the bodies 0. This resulted in loss of energy and hence our wheel stopped rather earlier than expected. Hence, we added a motor to it to drive it at a uniform angular velocity.
 
 \section{Analysis of code}
