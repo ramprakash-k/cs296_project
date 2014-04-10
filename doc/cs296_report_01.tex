@@ -1,12 +1,12 @@
 \documentclass{article}
-\usepackage[left=0.5in,right=0.5in,top=0.5in,bottom=0.5in]{geometry}
+\usepackage[left=0.5in,right=0.5in,top=1in,bottom=1in]{geometry}
 \usepackage{graphicx}
 \begin{document}
 
-\title{Lab 5: A Cs296 Report by Group 01}
+\title{Simulation of a perpetual clock in box2d: CS296 project by Group 01}
 \author{Siddharth Patel\\
   120050001\\
-  \texttt{sidd@cse.iitb.ac.in}\\
+  \texttt{sid@cse.iitb.ac.in}\\
   Ramprakash Krishnan\\
   120050083\\
   \texttt{ramprakash@cse.iitb.ac.in}\\
@@ -18,7 +18,7 @@
 
 
 \section{Introduction}
-This report intends to explain the physics of the box2D simulation of the base code with three more elements included.
+This report is made to explain our project for cs296 lab course. It contains a system of gears kept in motion by a perpetual wheel.
 \begin{figure}[h!] 
 \centering 
 \includegraphics[scale=.33]{simulation} 
@@ -26,53 +26,29 @@ This report intends to explain the physics of the box2D simulation of the base c
 \end{figure}
 
 \section{Physics behind the simulation.}
-\subsection{Rotating Platform}
-The platform starts rotating when the bar of the pulley system hits it\cite{wikir}.
-This platform is hinged at its center and can rotate freely around it.
-When the bar hits its edge, it applies an impulse of torque\cite{wikir} on the platform and imparts angular momentum\cite{wikil} given by
-\begin{center}
- $\vec{L} = \vec{r} \times \vec{p}$
-\end{center}
-\cite{resnick,univ,wikil}
-where $\vec{L}$ is the change in momentum vector, $\vec{r}$ is the position vector of the point of impact with respect to the hinging point and $\vec{p}$ is the change in momentum vector of the bar.
-\begin{figure}[h!] 
-\centering 
-\includegraphics[scale=.33]{platform} 
-\caption{The rotating Platform} 
+\subsection{Perpetual Wheel}
+\subsubsection{Perpetual Motion}
+Perpetual motion is the action of the device that once set in motion would continue in motion forever, with no additional energy required to maintain it. Such devices are impossible in real life due to energy loses due to friction. 
+\subsubsection{Perpetual Wheel}
+Wheel we used in this project is the modified version of the Bhaskara Wheel which was one of the most earliest recorded man-made perpetual wheel. 
+\section{Original Design}
+*****
+\section{Final Design and Changes made in the original design}
+*****
+\section{Reasons for modification of our original design}
+*****
+\section{Analysis of code}
+*****
+\section{Graphs}
+\begin{figure}
+\centering
+\graphicsinclude[scale= ]{ }
+\caption{  }
 \end{figure}
-\subsection{Bouncing Ball}
-The Bouncing Ball initially rests on the rotating platform.It has a coefficient of restitution\cite{wikie} of 0.9 due to which it is bouncy.Whenever it collides with an object some of its energy is reduced by a small amount only because the coefficient of restitution is close to 1.The initial velocity and the final velocity on collision are related as
-\begin{center}
-$ e=\frac{v_b -v_a}{u_a-u_b}$
-\end{center}
-\cite{resnick,univ,wikie}
-where e is the coefficient of restitution,\\
-\indent $v_a$ is the component of the final velocity of the first object in the direction of the impact,\\
-\indent	$v_b$ is the component of the final velocity of the second object in the direction of the impact,\\
-\indent	$u_a$ is the component of the initial velocity of the first object in the direction of the impact,\\
-\indent	$u_b$ is the component of the initial velocity of the second object in the direction of the impact.\\
-The velocity in the other directions remain the same since the friction is zero.
-\begin{figure}[h!] 
-\centering 
-\includegraphics[scale=.33]{bouncy} 
-\caption{The Bouncy Ball.} 
-\end{figure}
-\subsection{Wall}
-The wall is a fixed object in the simulation and is located below the rotating platform to its left. It is a static Body, it itself doesn't have mass in the simulation but is completely fixed to a body of infinite mass so it doesn't move. When the bouncy ball hits the wall the velocity of the ball is given by
-\begin{center}
-$ \vec{v} =\vec{u}_{vertical} + e\vec{u}_{horizontal} $
-\end{center}
-\cite{resnick,univ,wikie}where $\vec{v}$ is the final velocity vector of the ball,\\
-\indent $\vec{u}_{vertical}$ is the initial vertical velocity vector of the ball,\\
-\indent $\vec{u}_{horizontal}$ is the initial horizontal velocity vector of the ball,\\
-\indent e is the coefficient of restitution of the ball.\\
-\begin{figure}[h!] 
-\centering 
-\includegraphics[scale=.33]{wall} 
-\caption{The Rigid Wall.} 
-\end{figure}
-\section{Conclusions}
-\indent In the report we have talked about the general laws of the physics that can be used to explain the simulation.
-\bibliographystyle{plain}
-\bibliography{cs296_report_01}
+\cite 
+
+
+
+\bibliographystyle{ }
+\bibliography{ }
 \end{document}
