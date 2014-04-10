@@ -18,10 +18,12 @@
 
 #include "cs296_base.hpp"
 #include <cstdio>
+#include <string>
+#include "dominos.hpp"
 using namespace std;
 using namespace cs296;
 
-
+extern b2Body* gear[10];
 base_sim_t::base_sim_t()
 {
 	b2Vec2 gravity;
@@ -86,7 +88,27 @@ void base_sim_t::draw_title(int x, int y, const char *string)
 }
 
 void base_sim_t::step(settings_t* settings)
-{
+{	
+	double pi  = 3.14159265359;
+	int sec_d  = (int)(gear[6]->GetAngle()*180/pi);sec_d=(sec_d%360)/6;
+	int min_d  = (int)(gear[1]->GetAngle()*180/pi);min_d=(min_d%360)/6;;
+	int hour_d = (int)(gear[5]->GetAngle()*180/pi);hour_d=(hour_d%720)/30;;
+	char sec[3]="00",min[3]="00",hou[3]="00";
+	sec[1]='0'-(sec_d%10);sec[0]='0'-(sec_d/10);
+	min[1]='0'-(min_d%10);min[0]='0'-(min_d/10);
+	hou[1]='0'-(hour_d%10);hou[0]='0'-(hour_d/10);
+	string s="Time is ";
+	s.append(hou);
+	s.append(":");
+	s.append(min);
+	s.append(":");
+	s.append(sec);
+	char ans[20];
+	unsigned int i;
+	for(i=0;i<s.length();i++)
+		ans[i]=s[i];
+	ans[i]='\0';
+	draw_title(10,40,ans);
   float32 time_step = settings->hz > 0.0f ? 1.0f / settings->hz : float32(0.0f);
 
   if (settings->pause)
