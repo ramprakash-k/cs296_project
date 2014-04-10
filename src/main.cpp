@@ -17,9 +17,9 @@
 */
 
 /* 
- * Base code for CS 296 Software Systems Lab 
+ * Project for CS 296 Software Systems Lab 
  * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+ * Group 1 : Siddharth Patel , Ramprakash K , Viplov Jain
  */
 
 //! These are user defined include files
@@ -104,7 +104,7 @@ void create_glui_ui(void)
   new GLUI_Column( glui, false );
   glui->add_button("Pause", 0, callbacks_t::pause_cb);
   glui->add_button("Single Step", 0, callbacks_t::single_step_cb);
-  glui->add_button("Restart", 0, callbacks_t::restart_cb);
+  glui->add_button("Reset", 0, callbacks_t::restart_cb);
   
   glui->add_button("Quit", 0,(GLUI_Update_CB)callbacks_t::exit_cb);
   glui->set_main_gfx_window( main_window );
